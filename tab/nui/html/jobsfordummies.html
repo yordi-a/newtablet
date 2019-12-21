@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Not Alma Uygulaması</title>
+	<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css'><link rel="stylesheet" href="./style.css">
+	<script src='https://code.jquery.com/jquery-3.2.1.slim.min.js'></script>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js'></script>
+	<script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js'></script><script  src="./script.js"></script>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <link type="text/css" rel="stylesheet" href="css.css" />
+    <style>
+#buton{
+background-color:red;
+height: 60px;
+width: 220px;
+color: red;
+}
+
+       body {
+  margin: 25px;
+}
+#txtToDo {
+  width: 100%;
+  min-height: 100px;
+}
+.modal-body p {
+  margin-bottom: 5px;
+}
+.displayToDo {
+  overflow-wrap: break-word;
+}
+.deleteTask {
+  right: -10px;
+  bottom: -10px;
+  position: relative;
+  cursor: pointer;
+}
+#deleteIcon {
+  max-height: 18px;
+  width: auto;
+  opacity: 0.5;
+  display: inline-block;
+  -webkit-transition: opacity 0.3s ease-out;
+  -moz-transition: opacity 0.3s ease-out;
+  -o-transition: opacitycolor 0.3s ease-out;
+  transition: opacity 0.3s ease-out;
+}
+#deleteIcon:hover {
+  opacity: 0.8;
+}
+.filters {
+  list-style-type: none;
+  padding: 0;
+}
+.filters li {
+  float: left;
+  margin: 0 5px 0 0;
+  width: auto;
+  position: relative;
+}
+.filters label,
+.filters input {
+  display: block;
+  cursor: pointer;
+  background: #eee;
+  padding: 5px 10px;
+  border-radius: 3px;
+}
+.filters input[type="radio"] {
+  opacity: 0.011;
+  z-index: 100;
+  display: none;
+}
+.filters input[type="radio"]:checked + label {
+  text-decoration: underline;
+}
+.label {
+  margin-bottom: -5px;
+  font-size: 12px;
+}
+.right .btn {
+  color: #fff !important;
+  font-weight: 500;
+  margin-top: 15px;
+  float: right;
+}
+    </style>
+</head>
+<title>Yordi Not Alma</title>
+<body class="bg-dark">
+  
+	<div class="modal fade" id="addtask" role="dialog">
+	  <div class="modal-dialog">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h4>Yeni Not Oluştur</h4>
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+		  </div>
+		  <div class="modal-body">
+			<form>
+			  <p>Not:</p>
+				<textarea id="txtToDo" class="textBox"></textarea><br/><br/>
+			  <p>Öncelik:</p>
+				<select id="SaveCategory" class="textBox">
+				  <option value="Low">Düşük</option>
+					<option value="Medium">Medium</option>
+					<option value="High">Yüksek</option>
+					<option value="Urgent">Yüksek Düzey</option>
+				</select>
+			  </div>
+			<div class="modal-footer">
+			  <input type="button" data-dismiss="modal" class="btn btn-default btn-sm" onclick="SaveNotes()" name="Submit" class="submitButton" title="Submit" value="Kaydet & Çık" />
+			  <input type="button" class="btn btn-default btn-sm btn-info" onclick="SaveNotes()" name="Submit" class="submitButton" title="Submit" value="Kaydet & Yeni Not Oluştur" />
+			  </form>
+		  </div>
+		</div>      
+	  </div>
+	</div>
+	
+	<br/>
+	 <div class="container bg-white notes">
+	  <br/>
+	   <div class="row">
+	  <div class="col-9">
+		<span class="label">Öncelik:</span>
+		<ul class="filters">
+		  <li>
+			<input type="radio" name="category" id="category" value="All" onchange="loadNotes()" checked> 
+			<label for="category">Bütün Notlar</label>
+		  </li>
+		  <li>
+			<input type="radio" name="category" id="category1" value="Low" onchange="loadNotes()">
+			<label for="category1">Düşük</label>
+		  </li>
+		  <li>
+			<input type="radio" name="category" id="category2" value="Medium" onchange="loadNotes()">
+			<label for="category2">Medium</label>
+		  </li>
+		  <li>
+			<input type="radio" name="category" id="category3" value="High" onchange="loadNotes()">
+			<label for="category3">Yüsek</label>
+		  </li>
+		  <li>
+			<input type="radio" name="category" id="category4" value="Urgent" onchange="loadNotes()">
+			<label for="category4">Yüsek Düzey</label>
+		  </li>
+		</ul>
+	  </div>
+	  <div class="col-3 right">
+		<a class="btn btn-info btn-sm" data-toggle="modal" data-target="#addtask">&#43; Not Oluştur</a>
+	  </div>
+	   </div>
+	  <hr/>
+	  
+		<div id="displayArea" class="grid">
+		</div>
+	  <br/>
+  
+  <script src="main.js"></script>  
+
+
+    <script>
+      var aSaat = document.getElementById("saat"); //aSaat adında bir değişken tanımladık.
+function format(saatcek) {
+var bSaat = saatcek.toString();
+if (bSaat.length == 1) {
+return "0" + bSaat;
+} else {
+return bSaat;
+}
+}
+function saatGuncelleme() { //Burada bilgisayarımızdan saati çekiyoruz.
+var tarih = new Date();
+var saat = tarih.getHours(); //Burada saati çekiyoruz.
+var dakika = tarih.getMinutes(); //Burada dakikayı çekiyoruz.
+var saniye = tarih.getSeconds(); //Burada saniyeyi çekiyoruz.
+aSaat.textContent = format(saat) + ":" + format(dakika) + ":" + format(saniye); //Burada ekranımıza çıktımızı veriyoruz.
+}
+setInterval(saatGuncelleme, 1000);
+      // To create this basic little app, it took apprximately 4 hours. There is another version of this app, which is where the core JS, was written. This was then tweaked to create a more user friendly design. You can view version 1 here: https://codepen.io/ColourfulOwl/pen/ddrZzR //
+// Code used for local storage requests, along with categorising the tasks & also the filtering system. //
+var currentFormVisibilityStatus = false;
+        function SaveNotes() {
+            var category = document.getElementById("SaveCategory").value;
+            var todo = document.getElementById("txtToDo").value;
+
+            if (category == "") {
+                alert("Lütfen kategori seç!");
+                return;
+            }
+
+            var storage = JSON.parse(localStorage.getItem('ToDoList'));
+            var arrayLength = storage.length;
+
+            storage[arrayLength] = category;
+            storage[arrayLength + 1] = todo;
+            localStorage.setItem('ToDoList', JSON.stringify(storage));
+            category = "";
+            loadNotes();
+            clearNote();
+        }
+
+        function clearNote() {
+            var todo = document.getElementById("txtToDo");
+            todo.value = '';
+        }
+
+        function loadNotes() {
+            var storage = JSON.parse(localStorage.getItem('ToDoList'));
+
+            if (!storage) {
+                storage = [];
+                localStorage.setItem('ToDoList', JSON.stringify(storage));
+            }
+
+            var displayArea = document.getElementById("displayArea");
+          
+// Clunky filters using basic If statements.//
+          if (document.getElementById('category').checked) {
+            var currentFilter = "";
+          }else if (document.getElementById('category1').checked) {
+            var currentFilter = document.getElementById('category1').value;
+          }else if (document.getElementById('category2').checked) {
+            var currentFilter = document.getElementById('category2').value;
+          }else if (document.getElementById('category3').checked) {
+            var currentFilter = document.getElementById('category4').value;
+          }
+         
+         
+            var innerDiv = "";
+            for (var i = storage.length - 1; i >= 0; i = i - 2) {
+                if (currentFilter == storage[i - 1] || currentFilter == "") {
+                    var todoColor = 'AD7460';
+                    switch (storage[i - 1]) {
+                        case 'Düşük':
+                            todoColor = '90CA77';
+                            break;
+                        case 'Medium':
+                            todoColor = '81C6DD';
+                            break;
+                        case 'Yüksek':
+                            todoColor = 'FFAE68';
+                            break;
+                        case 'Yüksek Düzey':
+                            todoColor = 'A54646';
+                            break;
+                        default:
+                            todoColor = 'AD7460';
+                            break;
+                    }
+                    innerDiv += "<div class='row displayToDo'><div class='col-11'>" + storage[i] + " <br/>Öncelik : <span style='color:#" + todoColor + "'>" + storage[i - 1] + "</span> </div><span width='15px' height='15px' class='deleteTask' onclick='removeMe(" + i + ")' ><svg id='deleteIcon' width='100%'' height='100%' viewBox='0 0 24 24'><path d='M9 19c0 .552-.448 1-1 1s-1-.448-1-1v-10c0-.552.448-1 1-1s1 .448 1 1v10zm4 0c0 .552-.448 1-1 1s-1-.448-1-1v-10c0-.552.448-1 1-1s1 .448 1 1v10zm4 0c0 .552-.448 1-1 1s-1-.448-1-1v-10c0-.552.448-1 1-1s1 .448 1 1v10zm5-17v2h-20v-2h5.711c.9 0 1.631-1.099 1.631-2h5.315c0 .901.73 2 1.631 2h5.712zm-3 4v16h-14v-16h-2v18h18v-18h-2z'></path></svg></span></div><hr />";
+                }
+            }
+
+            if (innerDiv != undefined) {
+                displayArea.innerHTML = innerDiv;
+            }
+            else {
+                displayArea.innerHTML = "";
+            }
+        }
+
+        function removeMe(itemId) {
+            var storage = JSON.parse(localStorage.getItem('ToDoList'));
+            storage.splice(itemId - 1, 2);
+            localStorage.setItem('ToDoList', JSON.stringify(storage));
+            loadNotes();
+        }
+
+// Trigger to load the notes on page load. //
+        onload = function () {
+            loadNotes();
+        }
+    </script>
+</body>
+
+</html>
