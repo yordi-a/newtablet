@@ -1,1 +1,1 @@
-Yordi - Tablet (www.fivemturk.com)
+Yordi - Tablet (www.fivemsociety.com)
